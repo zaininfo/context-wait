@@ -31,7 +31,7 @@ import (
 func main() {
 	ctx, wait := wContext.WithWait(context.Background())
 
-	someFunc(ctx)
+	go someFunc(ctx)
 
 	// wait for context completion
 	wait()
