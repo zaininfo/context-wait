@@ -10,11 +10,11 @@ Therefore, the best use-case for a waitable context is when there is one essenti
 
 - `func WithWait(parent context.Context) (ctx context.Context, waitFunc func())`
 
-This function returns a new context and a `wait` function that can be used to wait for completion of the new context.
+This function returns a new context and a `wait` function that can be used to wait for completion of the new context. In case, the parent context is already a waitable context, this function returns it as it is.
 
 - `func Done(ctx context.Context)`
 
-`Done` function marks the passed context as completed.
+`Done` function marks the passed context as completed. This function is idempotent for the same context.
 
 #### Usage
 
