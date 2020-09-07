@@ -1,4 +1,5 @@
 ### Waitable context
+![GitHub Workflow Status](https://github.com/zaininfo/context-wait/workflows/CI/badge.svg)
 
 The `wait` module introduces two semantics for contexts to support waiting for a goroutine, which complements the existing functionality to cancel a goroutine.
 
