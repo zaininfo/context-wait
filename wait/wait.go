@@ -5,17 +5,14 @@ import (
 	"sync"
 )
 
-// key is an unexported type for keys defined in this package.
-// This prevents collisions with keys defined in other packages.
-type key int
-
 // waitChan is an unexported type for channel used as the blocking statement in
 // the waitFunc returned by wait.WithWait.
 type waitChan chan struct{}
 
-// waitKey is the key for wait.waitChan values in Contexts. It is unexported;
+// waitKey is the key for wait.waitChan values in Contexts.
+// It is unexported to prevent collisions with keys defined in other packages.
 // clients use wait.WithWait and wait.Done instead of using this key directly.
-var waitKey key
+type waitKey struct{}
 
 // mutex is the mutual exclusion lock used to prevent a race condition in
 // wait.Done.
@@ -31,7 +28,7 @@ func WithWait(parent context.Context) (ctx context.Context, waitFunc func()) {
 	var ok bool
 	if wait, ok = getWaitChan(parent); !ok {
 		wait = make(waitChan)
-		ctx = context.WithValue(parent, waitKey, wait)
+		ctx = context.WithValue(parent, waitKey{}, wait)
 	}
 
 	waitFunc = func() {
@@ -64,7 +61,7 @@ func Done(ctx context.Context) {
 // getWaitChan returns the wait.waitChan value from the provided Context, if
 // available.
 func getWaitChan(ctx context.Context) (wait waitChan, ok bool) {
-	wait, ok = ctx.Value(waitKey).(waitChan)
+	wait, ok = ctx.Value(waitKey{}).(waitChan)
 
 	return
 }
