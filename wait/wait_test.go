@@ -31,11 +31,8 @@ func TestWaitableContext_TypicalUsage(t *testing.T) {
 	// completion by marking the context as done
 	importantWorker := func(ctx context.Context) {
 		defer Done(ctx)
-
-		select {
-		case <-time.After(time.Second * 5):
-			workSheet.Store(importantWorkerID, struct{}{})
-		}
+		<-time.After(time.Second * 5)
+		workSheet.Store(importantWorkerID, struct{}{})
 	}
 
 	// a worker goroutine that will terminate on context cancellation
@@ -63,10 +60,8 @@ func TestWaitableContext_TypicalUsage(t *testing.T) {
 
 	// 2) timeout optional worker
 	go func() {
-		select {
-		case <-time.After(time.Second):
-			cancel()
-		}
+		<-time.After(time.Second)
+		cancel()
 	}()
 
 	// 3) wait for important worker
@@ -91,8 +86,6 @@ func TestWaitableContext_Concurrency(t *testing.T) {
 	// a map to check the status of goroutines
 	goroutines := sync.Map{}
 
-	// a waitable context
-	ctx, wait := WithWait(ctx)
 	go func(ctx context.Context) {
 		defer goroutines.Store(goroutine1, struct{}{})
 
@@ -117,7 +110,7 @@ func TestWaitableContext_Concurrency(t *testing.T) {
 	}(ctx)
 
 	// a waitable context
-	ctx, wait = WithWait(ctx)
+	ctx, wait := WithWait(ctx)
 	go func(ctx context.Context) {
 		defer goroutines.Store(goroutine2, struct{}{})
 
