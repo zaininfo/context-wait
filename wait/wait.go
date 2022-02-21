@@ -32,9 +32,7 @@ func WithWait(parent context.Context) (ctx context.Context, waitFunc func()) {
 	}
 
 	waitFunc = func() {
-		select {
-		case <-wait:
-		}
+		<-wait
 	}
 
 	return
