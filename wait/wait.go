@@ -52,8 +52,6 @@ func Done(ctx context.Context) {
 			close(wait)
 		}
 	}
-
-	return
 }
 
 // getWaitChan returns the wait.waitChan value from the provided Context, if
